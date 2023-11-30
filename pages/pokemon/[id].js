@@ -1,8 +1,11 @@
 import Layout from '../../components/Layout';
 import getPokemonData from '../../utils/pokemonApi';
+const apiKey = process.env.API_KEY_MAPS;
+console.log(apiKey); // Imprime la clave almacenada en .env
 
 const Pokemon = ({ pokemon }) => (
-  console.log(pokemon),
+   
+  
   <Layout content={(
     <div className="container mx-auto mt-8 text-center">
       <img

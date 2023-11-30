@@ -1,0 +1,166 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+      {
+        "type": "Feature",
+        "properties": {
+          "nombre": "Álvaro Obregón"
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [-99.2124, 19.3627]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "nombre": "Azcapotzalco"
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [-99.1849, 19.4869]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "nombre": "Benito Juárez"
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [-99.1403, 19.3801]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "nombre": "Coyoacán"
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [-99.1628, 19.3280]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "nombre": "Cuajimalpa de Morelos"
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [-99.2900, 19.3587]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "nombre": "Cuauhtémoc"
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [-99.1476, 19.4370]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "nombre": "Gustavo A. Madero"
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [-99.1129, 19.4964]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "nombre": "Iztacalco"
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [-99.0937, 19.3954]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "nombre": "Iztapalapa"
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [-99.0671, 19.3554]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "nombre": "Magdalena Contreras"
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [-99.2445, 19.3104]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "nombre": "Miguel Hidalgo"
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [-99.1806, 19.4319]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "nombre": "Milpa Alta"
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [-99.0379, 19.1951]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "nombre": "Tláhuac"
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [-99.0047, 19.2693]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "nombre": "Tlalpan"
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [-99.1625, 19.2006]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "nombre": "Venustiano Carranza"
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [-99.1047, 19.4424]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "nombre": "Xochimilco"
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [-99.0944, 19.2465]
+        }
+      }
+    ]
+  }
+  
