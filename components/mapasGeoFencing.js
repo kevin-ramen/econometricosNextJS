@@ -2,13 +2,15 @@ import React, { useState } from "react";
 import { GoogleMap, LoadScript, Polygon, InfoWindow } from "@react-google-maps/api";
 
 const MapContainer = ({geoJson}) => {
- /*  const geoJson = {
-    "type": "FeatureCollection",
-    "features": [
-      // ... (tus objetos GeoJSON aquí)
-    ]
-  }; */
-  console.log(geoJson);
+
+  const getColorByE_IDS_V = (eIdsV) => {
+    
+    if (eIdsV == "Muy Bajo") return "#FF0000"; // Rojo
+    if (eIdsV == "Bajo") return "#FFA500"; // Naranja
+    if (eIdsV == "Medio") return "#FFFF00"; // Amarillo
+    if (eIdsV == "Alto") return "#00FF80"; // Verde claro
+    return "#0AB11D";  
+  };
 
   const polygons = geoJson.features
     .filter(feature => feature.properties.GeoShape?.coordinates) // Filtrar las features que tienen coordenadas
@@ -21,11 +23,11 @@ const MapContainer = ({geoJson}) => {
    return {
         paths: coordinates,
         options: {
-          fillColor: feature.properties.color || "#FF0000",
+          fillColor: getColorByE_IDS_V(feature.properties.E_IDS_V),
           fillOpacity: 0.35,
-          strokeColor: feature.properties.color || "#FF0000",
+          strokeColor: feature.properties.color || "#161618",
           strokeOpacity: 0.8,
-          strokeWeight: 2,
+          strokeWeight: 0.5,
           clickable: true,
           draggable: false,
           editable: false,
@@ -56,6 +58,8 @@ const MapContainer = ({geoJson}) => {
     newInfoWindowsState[index] = !newInfoWindowsState[index];
     setInfoWindowsOpen(newInfoWindowsState);
   };
+
+  
 
   return (
     <LoadScript googleMapsApiKey='AIzaSyCwwLJHujEZM1HVi-D8FWKeR_gug2QrtAo'>
