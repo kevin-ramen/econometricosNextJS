@@ -1,86 +1,54 @@
+// MapComponent.js
 import React from 'react';
-import { GoogleMap, useJsApiLoader, Marker } from '@react-google-maps/api';
+import { GoogleMap, Marker, Polygon } from '@react-google-maps/api';
 
-import { InfoWindow } from '@react-google-maps/api';
+const MapComponent = ({ locations }) => {
+  const mapContainerStyle = {
+    width: '100%',
+    height: '500px',
+  };
 
-const apiKey = process.env.API_KEY_MAPS;
-console.log(apiKey);
-const containerStyle = {
-  height: '500px',
-  width: '100%',
-};
+  const center = {
+    lat: 19.472845380027369,
+    lng: -99.15574594850743,
+  };
 
-const defaultCenter = {
-  lat: 19.43,
-  lng: -99.1,
-};
+  const apiKey = 'AIzaSyCwwLJHujEZM1HVi-D8FWKeR_gug2QrtAo'; // Reemplaza con tu propia clave de API de Google Maps
 
-const MapaPropiedades = ({ geoJsonData }) => {
-  const { isLoaded } = useJsApiLoader({
-    id: 'google-map-script',
-    googleMapsApiKey: "AIzaSyCwwLJHujEZM1HVi-D8FWKeR_gug2QrtAo",
-  });
-
-  let houseIcon = 'https://img.icons8.com/emoji/48/000000/house-emoji.png';
-  console.log(geoJsonData);
-  const [map, setMap] = React.useState(null);
-  const [selectedMarker, setSelectedMarker] = React.useState(null);
-
-  const onLoad = React.useCallback(function callback(map) {
-    const bounds = new window.google.maps.LatLngBounds(defaultCenter);
-    map.fitBounds(bounds);
-
-    setMap(map);
-  }, []);
-
-  const onUnmount = React.useCallback(function callback(map) {
-    setMap(null);
-  }, []);
-
-  return isLoaded ? (
+  return (
     <GoogleMap
-      mapContainerStyle={containerStyle}
-      center={defaultCenter}
-      zoom={8}
-      onLoad={onLoad}
-      onUnmount={onUnmount}
+      mapContainerStyle={mapContainerStyle}
+      center={center}
+      zoom={14}
     >
-      {geoJsonData.features.map((feature, index) => (
+      {/* Agrega marcadores para cada ubicación */}
+      {locations.map((location) => (
         <Marker
-          key={index}
+          key={location.properties.Unnamed}
           position={{
-            lat: feature.geometry.coordinates[1],
-            lng: feature.geometry.coordinates[0],
+            lat: location.geometry.coordinates[1],
+            lng: location.geometry.coordinates[0],
           }}
-          icon={{
-            url: houseIcon,
-            scaledSize: new window.google.maps.Size(30, 30),
-          }}
-          onClick={() => {
-            setSelectedMarker(feature);
-          }}
+          title={location.properties.Colonianame}
         />
       ))}
 
-      {selectedMarker && (
-        <InfoWindow
-          position={{
-            lat: selectedMarker.geometry.coordinates[1],
-            lng: selectedMarker.geometry.coordinates[0],
+      {/* Dibuja polígonos para las áreas */}
+      {locations.map((location) => (
+        <Polygon
+          key={location.properties.Unnamed}
+          paths={location.geometry.coordinates[0]}
+          options={{
+            strokeColor: '#0000FF',
+            strokeOpacity: 0.8,
+            strokeWeight: 2,
+            fillColor: '#0000FF',
+            fillOpacity: 0.35,
           }}
-          onCloseClick={() => {
-            setSelectedMarker(null);
-          }}
-        >
-          <div>
-            <p><strong>Precio:</strong> ${selectedMarker.properties.precio}.00</p>
-            <p><strong>Tamaño:</strong> {selectedMarker.properties.tamanio} metros cuadrados</p>
-            <p><strong>Dirección:</strong> {selectedMarker.properties.ubicacion}</p>
-          </div>
-        </InfoWindow>
-      )}
+        />
+      ))}
     </GoogleMap>
-  ) : <></>;
+  );
 };
 
-export default React.memo(MapaPropiedades);
+export default MapComponent;
