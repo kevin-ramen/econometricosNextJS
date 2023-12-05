@@ -1,6 +1,6 @@
+// next.config.js
 require("dotenv").config();
 
-// next.config.js
 module.exports = {
   webpack(config) { 
     config.module.rules.push({
@@ -8,5 +8,8 @@ module.exports = {
       use: ["json-loader"],
     });
     return config;
+  },
+  env: {
+    staticFolder: '/props',
   },
 };

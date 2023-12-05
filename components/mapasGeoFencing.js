@@ -1,18 +1,19 @@
 import React, { useState } from "react";
-import { GoogleMap, LoadScript, Polygon, InfoWindow } from "@react-google-maps/api";
-
-const MapContainer = ({geoJson}) => {
-
-  const getColorByE_IDS_V = (eIdsV) => {
+import { GoogleMap, LoadScript, Polygon, InfoWindow ,Marker} from "@react-google-maps/api";
+import SupermercadoImagen from '../props/supermercadoverde.png';
+import PropiedadImagen from '../props/locacionverde.png';
+const MapContainer = ({geoJson,propiedadesGeoJson, supermercadosGeoJson}) => {
+ 
+const getColorByE_IDS_V = (eIdsV) => {
     
     if (eIdsV == "Muy Bajo") return "#FF0000"; // Rojo
     if (eIdsV == "Bajo") return "#FFA500"; // Naranja
     if (eIdsV == "Medio") return "#FFFF00"; // Amarillo
     if (eIdsV == "Alto") return "#00FF80"; // Verde claro
     return "#0AB11D";  
-  };
+};
 
-  const polygons = geoJson.features
+const polygons = geoJson.features
     .filter(feature => feature.properties.GeoShape?.coordinates) // Filtrar las features que tienen coordenadas
     .map((feature, index) => {
       const coordinates = feature.properties.GeoShape.coordinates[0].map(coord => ({
@@ -20,7 +21,7 @@ const MapContainer = ({geoJson}) => {
         lng: coord[0],
       }));
 
-   return {
+return {
         paths: coordinates,
         options: {
           fillColor: getColorByE_IDS_V(feature.properties.E_IDS_V),
@@ -41,9 +42,9 @@ const MapContainer = ({geoJson}) => {
       };
     });
 
-  const [infoWindowsOpen, setInfoWindowsOpen] = useState(Array(polygons.length).fill(false));
+const [infoWindowsOpen, setInfoWindowsOpen] = useState(Array(polygons.length).fill(false));
 
-  const mapStyles = {
+const mapStyles = {
     height: "100vh",
     width: "100%",
   };
@@ -59,11 +60,49 @@ const MapContainer = ({geoJson}) => {
     setInfoWindowsOpen(newInfoWindowsState);
   };
 
-  
+  const iconSizePercentage = 5;
 
   return (
     <LoadScript googleMapsApiKey='AIzaSyCwwLJHujEZM1HVi-D8FWKeR_gug2QrtAo'>
-      <GoogleMap mapContainerStyle={mapStyles} center={defaultCenter} zoom={10}>
+      <GoogleMap 
+      mapContainerStyle={mapStyles} 
+      center={defaultCenter} 
+      zoom={10}
+      >
+
+      {propiedadesGeoJson.features.map((feature, index) => (
+        <Marker
+          key={`propiedad-${index}`}
+          position={{
+            lat: feature.geometry.coordinates[1],
+            lng: feature.geometry.coordinates[0],
+          }}
+          icon={{
+            url: PropiedadImagen,
+            iconSize: [80,80]
+          }}
+          onClick={() => {
+            setSelectedMarker(feature);
+          }}
+        />
+      ))}
+      {supermercadosGeoJson.features.map((supermercado, index) => (
+        <Marker
+          key={`supermercado-${index}`}
+          position={{
+            lat: supermercado.geometry.coordinates[1],
+            lng: supermercado.geometry.coordinates[0],
+          }}
+          icon={{
+            url: SupermercadoImagen,
+            iconSize: [80,80]
+          }}
+          onClick={() => {
+            setSelectedMarker(supermercado);
+          }}
+        />
+      ))}
+      
         {polygons.map((polygon, index) => (
           <React.Fragment key={index}>
             <Polygon
