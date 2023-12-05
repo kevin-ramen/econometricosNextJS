@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import { GoogleMap, LoadScript, Polygon, InfoWindow ,Marker} from "@react-google-maps/api";
-import SupermercadoImagen from '../props/supermercadoverde.png';
-import PropiedadImagen from '../props/locacionverde.png';
-const MapContainer = ({geoJson,propiedadesGeoJson, supermercadosGeoJson}) => {
  
+const MapContainer = ({geoJson,propiedadesGeoJson, supermercadosGeoJson}) => {
+  const [selectedMarker, setSelectedMarker] = React.useState(null);
 const getColorByE_IDS_V = (eIdsV) => {
     
     if (eIdsV == "Muy Bajo") return "#FF0000"; // Rojo
@@ -12,6 +11,13 @@ const getColorByE_IDS_V = (eIdsV) => {
     if (eIdsV == "Alto") return "#00FF80"; // Verde claro
     return "#0AB11D";  
 };
+
+
+const colorIcono = (precio) => {
+  if (precio < 5000) return "http://127.0.0.1:5000/static/locacionverde.png"
+  if (precio > 5000 && precio < 10000) return "http://127.0.0.1:5000/static/locacionnraranja.png"
+  return "http://127.0.0.1:5000/static/locacionrojo.png"
+}
 
 const polygons = geoJson.features
     .filter(feature => feature.properties.GeoShape?.coordinates) // Filtrar las features que tienen coordenadas
@@ -60,8 +66,7 @@ const mapStyles = {
     setInfoWindowsOpen(newInfoWindowsState);
   };
 
-  const iconSizePercentage = 5;
-
+ 
   return (
     <LoadScript googleMapsApiKey='AIzaSyCwwLJHujEZM1HVi-D8FWKeR_gug2QrtAo'>
       <GoogleMap 
@@ -78,8 +83,8 @@ const mapStyles = {
             lng: feature.geometry.coordinates[0],
           }}
           icon={{
-            url: PropiedadImagen,
-            iconSize: [80,80]
+            url: colorIcono(feature.properties.precio),
+            scale: 0.05
           }}
           onClick={() => {
             setSelectedMarker(feature);
@@ -94,8 +99,8 @@ const mapStyles = {
             lng: supermercado.geometry.coordinates[0],
           }}
           icon={{
-            url: SupermercadoImagen,
-            iconSize: [80,80]
+            url: 'http://127.0.0.1:5000/static/supermercadoverde.png',
+            scale: 0.01
           }}
           onClick={() => {
             setSelectedMarker(supermercado);
@@ -124,6 +129,33 @@ const mapStyles = {
             )}
           </React.Fragment>
         ))}
+
+        {selectedMarker && (
+        <InfoWindow
+          position={{
+            lat: selectedMarker.geometry.coordinates[1],
+            lng: selectedMarker.geometry.coordinates[0],
+          }}
+          onCloseClick={() => {
+            setSelectedMarker(null);
+          }}
+        >
+          <div>
+            <p><strong>Nombre:</strong> {selectedMarker.properties.NOMBRECOMERCIAL || selectedMarker.properties.ubicacion}</p>
+            {selectedMarker.properties.precio && (
+              <p><strong>Precio:</strong> ${selectedMarker.properties.precio}</p>
+            )}
+
+            {selectedMarker.properties.PRECIO && (
+              <p><strong>Precio total de los productos: </strong> ${selectedMarker.properties.PRECIO}.00</p>
+            
+            )}
+            
+          </div>
+        </InfoWindow>
+      )}
+
+
       </GoogleMap>
     </LoadScript>
   );
