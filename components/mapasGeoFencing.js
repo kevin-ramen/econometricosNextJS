@@ -7,12 +7,13 @@ import {
   colorIcono
 } from "../utils/funcionesMapa";
 
-const MapContainer = ({geoJson, propiedadesGeoJson, supermercadosGeoJson, coloniasAMostrar}) => {
+const MapContainer = ({geoJson, propiedadesGeoJson, coloniasAMostrar,supermercadosGeoJson=null}) => {
 
 //States 
 const [selectedMarker, setSelectedMarker] = React.useState(null);
 const [precioMaximoSupermercado, setPrecioMaximoSupermercado] = useState(0);
 const [precioPromedioSupermercado, setPrecioPromedioSupermercado] = useState(0);
+const [propiedadesColonias, setPropiedadesColonias] = useState([]);
 
 //UseEffect
 useEffect(() => {
@@ -23,7 +24,21 @@ useEffect(() => {
   }catch(e){
     console.log(e);
   }
-}, []);
+}, [supermercadosGeoJson]);
+
+
+useEffect(() => {
+
+  //obtenemos en un estado las propiedades que estan en las colonias filtradas
+  const propiedadesFiltradas = propiedadesGeoJson.features.filter(feature =>
+    feature.geometry.coordinates && (coloniasAMostrar.length === 0 || coloniasAMostrar.includes(feature.properties.colonia))
+  );
+  setPropiedadesColonias(propiedadesFiltradas);
+  console.log("propiedadesFiltradas", propiedadesFiltradas);
+}, [coloniasAMostrar]);
+
+
+
 
 //Funcion para colorear
 const colorIconoSupermercado = (precio) => {
@@ -32,12 +47,10 @@ const colorIconoSupermercado = (precio) => {
   return "http://127.0.0.1:5000/static/supermercadorojo.png"
 }
 
-/* console.log("coloniasAMostrar", coloniasAMostrar);
-console.log("preview ->", geoJson.features[0].properties.Colonianame)
-console.log("coloniasAMostrar lista", coloniasAMostrar.includes(geoJson.features[0].properties.Colonianame)); */
+ 
 
 const polygons = geoJson.features
-  .filter(feature => feature.properties.GeoShape?.coordinates && (coloniasAMostrar.length > 0 || coloniasAMostrar.includes(feature.properties.Colonianame)))
+  .filter(feature => feature.properties.GeoShape?.coordinates && (coloniasAMostrar.length >= 0 || coloniasAMostrar.includes(feature.properties.Colonianame)))
   .map((feature, index) => {
       const coordinates = feature.properties.GeoShape.coordinates[0].map(coord => ({
         lat: coord[1],
@@ -75,8 +88,8 @@ const mapStyles = {
   };
 
   const defaultCenter = {
-    lat: polygons[0]?.paths[0]?.lat || 0,
-    lng: polygons[0]?.paths[0]?.lng || 0,
+    lat: polygons[0]?.paths[0]?.lat || 19.42847,
+    lng: polygons[0]?.paths[0]?.lng || -99.12766,
   };
 
   const handlePolygonClick = (index) => {
@@ -85,10 +98,11 @@ const mapStyles = {
     setInfoWindowsOpen(newInfoWindowsState);
   };
 
-  console.log("propiedadesGeoJson.features:", (propiedadesGeoJson.features[0].properties.colonia).trimStart());
-  console.log("propiedadesGeoJson.features:", (propiedadesGeoJson.features[0].properties.colonia));
- 
-  console.log("longitud:", coloniasAMostrar.length);
+  
+  //Mostrar las propiedades que estan en las colonias filtradas
+  
+
+
   return (
     <LoadScript googleMapsApiKey='AIzaSyCwwLJHujEZM1HVi-D8FWKeR_gug2QrtAo'>
       <GoogleMap 
@@ -98,7 +112,7 @@ const mapStyles = {
       >
         
       {propiedadesGeoJson.features
-      .filter(feature => feature.geometry.coordinates && (coloniasAMostrar.length == 1 || coloniasAMostrar.includes(feature.properties.colonia)))
+      .filter(feature => feature.geometry.coordinates && (coloniasAMostrar.length == 0 || coloniasAMostrar.includes(feature.properties.colonia)))
       .map((feature, index) => (
         <Marker
           key={`propiedad-${index}`}
@@ -115,22 +129,26 @@ const mapStyles = {
           }}
         />
       ))}
-      {supermercadosGeoJson.features.map((supermercado, index) => (
-        <Marker
-          key={`supermercado-${index}`}
-          position={{
-            lat: supermercado.geometry.coordinates[1],
-            lng: supermercado.geometry.coordinates[0],
-          }}
-          icon={{
-            url: colorIconoSupermercado(supermercado.properties.PRECIO),
-            scale: 0.01
-          }}
-          onClick={() => {
-            setSelectedMarker(supermercado);
-          }}
-        />
-      ))}
+     {supermercadosGeoJson && supermercadosGeoJson.features && supermercadosGeoJson.features.map((supermercado, index) => (
+  supermercado && supermercado.geometry && supermercado.geometry.coordinates ? (
+    <Marker
+      key={`supermercado-${index}`}
+      position={{
+        lat: supermercado.geometry.coordinates[1],
+        lng: supermercado.geometry.coordinates[0],
+      }}
+      icon={{
+        url: colorIconoSupermercado(supermercado.properties.PRECIO),
+        scale: 0.01
+      }}
+      onClick={() => {
+        setSelectedMarker(supermercado);
+      }}
+    />
+  ) : null
+))}
+
+
       
         {polygons.map((polygon, index) => (
           <React.Fragment key={index}>
@@ -145,9 +163,9 @@ const mapStyles = {
                 onCloseClick={() => handlePolygonClick(index)}
               >
                 <div>
-                  <h3>{polygon.informacion.titulo}</h3>
-                  <p>{polygon.informacion.descripcion}</p>
-                  <p>{polygon.informacion.color}</p>
+                  <h3><b>Colonia:</b> {polygon.informacion.titulo}</h3>
+                  <p><b>Indice:</b> {polygon.informacion.descripcion}</p>
+                  <p><b>Delegacion:</b> {polygon.informacion.color}</p>
                 </div>
               </InfoWindow>
             )}
