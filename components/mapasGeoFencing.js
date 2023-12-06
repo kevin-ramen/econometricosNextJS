@@ -1,31 +1,49 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { GoogleMap, LoadScript, Polygon, InfoWindow ,Marker} from "@react-google-maps/api";
- 
-const MapContainer = ({geoJson,propiedadesGeoJson, supermercadosGeoJson}) => {
-  const [selectedMarker, setSelectedMarker] = React.useState(null);
-const getColorByE_IDS_V = (eIdsV) => {
-    
-    if (eIdsV == "Muy Bajo") return "#FF0000"; // Rojo
-    if (eIdsV == "Bajo") return "#FFA500"; // Naranja
-    if (eIdsV == "Medio") return "#FFFF00"; // Amarillo
-    if (eIdsV == "Alto") return "#00FF80"; // Verde claro
-    return "#0AB11D";  
-};
+import {
+  calcularPrecioMaximoSupermercado,
+  calcularPrecioPromedioSupermercado,
+  getColorByE_IDS_V,
+  colorIcono
+} from "../utils/funcionesMapa";
 
+const MapContainer = ({geoJson, propiedadesGeoJson, supermercadosGeoJson, coloniasAMostrar}) => {
 
-const colorIcono = (precio) => {
-  if (precio < 5000) return "http://127.0.0.1:5000/static/locacionverde.png"
-  if (precio > 5000 && precio < 10000) return "http://127.0.0.1:5000/static/locacionnraranja.png"
-  return "http://127.0.0.1:5000/static/locacionrojo.png"
+//States 
+const [selectedMarker, setSelectedMarker] = React.useState(null);
+const [precioMaximoSupermercado, setPrecioMaximoSupermercado] = useState(0);
+const [precioPromedioSupermercado, setPrecioPromedioSupermercado] = useState(0);
+
+//UseEffect
+useEffect(() => {
+  try{
+    console.log("Supermercados", supermercadosGeoJson);
+    setPrecioMaximoSupermercado(calcularPrecioMaximoSupermercado(supermercadosGeoJson.features));
+    setPrecioPromedioSupermercado(calcularPrecioPromedioSupermercado(supermercadosGeoJson.features));
+  }catch(e){
+    console.log(e);
+  }
+}, []);
+
+//Funcion para colorear
+const colorIconoSupermercado = (precio) => {
+  if (precio < precioPromedioSupermercado) return "http://127.0.0.1:5000/static/supermercadoverde.png"
+  if (precio > precioPromedioSupermercado && precio < precioMaximoSupermercado) return "http://127.0.0.1:5000/static/supermercadonaranja.png"
+  return "http://127.0.0.1:5000/static/supermercadorojo.png"
 }
 
+/* console.log("coloniasAMostrar", coloniasAMostrar);
+console.log("preview ->", geoJson.features[0].properties.Colonianame)
+console.log("coloniasAMostrar lista", coloniasAMostrar.includes(geoJson.features[0].properties.Colonianame)); */
+
 const polygons = geoJson.features
-    .filter(feature => feature.properties.GeoShape?.coordinates) // Filtrar las features que tienen coordenadas
-    .map((feature, index) => {
+  .filter(feature => feature.properties.GeoShape?.coordinates && (coloniasAMostrar.length > 0 || coloniasAMostrar.includes(feature.properties.Colonianame)))
+  .map((feature, index) => {
       const coordinates = feature.properties.GeoShape.coordinates[0].map(coord => ({
         lat: coord[1],
         lng: coord[0],
       }));
+
 
 return {
         paths: coordinates,
@@ -48,6 +66,7 @@ return {
       };
     });
 
+console.log("polygons", polygons);
 const [infoWindowsOpen, setInfoWindowsOpen] = useState(Array(polygons.length).fill(false));
 
 const mapStyles = {
@@ -66,7 +85,10 @@ const mapStyles = {
     setInfoWindowsOpen(newInfoWindowsState);
   };
 
+  console.log("propiedadesGeoJson.features:", (propiedadesGeoJson.features[0].properties.colonia).trimStart());
+  console.log("propiedadesGeoJson.features:", (propiedadesGeoJson.features[0].properties.colonia));
  
+  console.log("longitud:", coloniasAMostrar.length);
   return (
     <LoadScript googleMapsApiKey='AIzaSyCwwLJHujEZM1HVi-D8FWKeR_gug2QrtAo'>
       <GoogleMap 
@@ -74,8 +96,10 @@ const mapStyles = {
       center={defaultCenter} 
       zoom={10}
       >
-
-      {propiedadesGeoJson.features.map((feature, index) => (
+        
+      {propiedadesGeoJson.features
+      .filter(feature => feature.geometry.coordinates && (coloniasAMostrar.length == 1 || coloniasAMostrar.includes(feature.properties.colonia)))
+      .map((feature, index) => (
         <Marker
           key={`propiedad-${index}`}
           position={{
@@ -99,7 +123,7 @@ const mapStyles = {
             lng: supermercado.geometry.coordinates[0],
           }}
           icon={{
-            url: 'http://127.0.0.1:5000/static/supermercadoverde.png',
+            url: colorIconoSupermercado(supermercado.properties.PRECIO),
             scale: 0.01
           }}
           onClick={() => {
@@ -143,7 +167,12 @@ const mapStyles = {
           <div>
             <p><strong>Nombre:</strong> {selectedMarker.properties.NOMBRECOMERCIAL || selectedMarker.properties.ubicacion}</p>
             {selectedMarker.properties.precio && (
-              <p><strong>Precio:</strong> ${selectedMarker.properties.precio}</p>
+             <>
+              <p><strong>Precio:</strong> $ {selectedMarker.properties.precio} pesos mexicanos. /  $ {((selectedMarker.properties.precio)/17.42).toFixed(1)} dolares</p>
+              <p><strong>Tamaño:</strong> {selectedMarker.properties.tamanio} metros cuadrados</p>
+              <p><strong>Colonia:</strong> {selectedMarker.properties.colonia}</p>
+              <p><strong>Delegacion:</strong> {selectedMarker.properties.delegacion}</p>
+             </>
             )}
 
             {selectedMarker.properties.PRECIO && (

@@ -4,12 +4,16 @@ import MapContainer from '../components/mapasGeoFencing'
 import getMapaData from '../utils/mapasApi';
 import Header from '../components/header';
 import Footer from '../components/Footer';
+import coloniasJson from '../props/data_colonias.json';
 
 const Index = () => {
   const [mapaData, setMapaData] = useState({});
   const [mapaData3, setMapaData3] = useState({});
   const [mapaData4, setMapaData4] = useState({});
   const [mapaData5, setMapaData5] = useState({});
+
+  const [colonias, setColonias] = useState([]);
+  const [coloniasSeleccionadas, setColoniasSeleccionadas] = useState([]);
 
   useEffect(() => {
     const getData = async () => {
@@ -26,6 +30,20 @@ const Index = () => {
     getData();
   }, []);
 
+  useEffect(() => {
+    setColonias(coloniasJson);
+  }, []);
+
+  const handleCheckboxChange = (colonia) => {
+    if (coloniasSeleccionadas.includes(colonia)) {
+      // Si la colonia ya está seleccionada, quitarla del estado
+      setColoniasSeleccionadas(coloniasSeleccionadas.filter((c) => c !== colonia));
+    } else {
+      // Si la colonia no está seleccionada, agregarla al estado
+      setColoniasSeleccionadas([...coloniasSeleccionadas, colonia]);
+    }
+  };
+
   return (
    
     <>  
@@ -35,20 +53,21 @@ const Index = () => {
     </div>
     
     <div className="container mx-auto mt-8 flex">
-     
-    
     <div className="w-3/4 pr-4">
       <div>
-        
         {mapaData4.geojson_data && (
-          <MapContainer id="4" geoJson={mapaData4.geojson_data} propiedadesGeoJson={mapaData.geojson_data} supermercadosGeoJson={mapaData5.geojson_data}/>
+          <MapContainer id="4" 
+            geoJson={mapaData4.geojson_data} 
+            propiedadesGeoJson={mapaData.geojson_data} 
+            supermercadosGeoJson={mapaData5.geojson_data} 
+            coloniasAMostrar={coloniasSeleccionadas} 
+          />
         )}
       </div>
     </div>
 
     
     <div className="w-1/4 pl-4">
-      
       <div className="mb-4">
         <p className='pt-4 pb-4'>Selecciona el platillo que quieres vender</p>
         <label htmlFor="comida" className="block text-sm font-medium text-gray-700">Selecciona tu comida:</label>
@@ -62,17 +81,22 @@ const Index = () => {
 
       
       <div className="mb-4">
-        <label htmlFor="busqueda" className="block text-sm font-medium text-gray-700">Buscar por colonia:</label>
-        <div className="mt-1 relative rounded-md shadow-sm">
-          <input type="text" id="busqueda" name="busqueda" className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-3 pr-10 py-2 border-gray-300 rounded-md" placeholder="Nombre de la colonia" />
-          <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-            
-            <svg className="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-              <path fillRule="evenodd" d="M11 14h-.79l-.28-.27a6.5 6.5 0 111.06-1.06l.27.28v.79l5 4.99L15.99 20l.01-5-4.99-5zm-5 0C4.01 14 2 11.99 2 9.5S4.01 5 6.5 5 11 6.99 11 9.5 8.99 14 6.5 14z" clipRule="evenodd" />
-            </svg>
-          </div>
+      <label className="block text-sm font-medium text-gray-700">Colonias:</label>
+      {colonias.map((colonia, index) => (
+        <div key={index} className="flex items-center">
+          <input
+            type="checkbox"
+            id={`colonia-${index}`}
+            value={colonia}
+            checked={coloniasSeleccionadas.includes(colonia)}
+            onChange={() => handleCheckboxChange(colonia)}
+            className="mr-2"
+          />
+          <label htmlFor={`colonia-${index}`}>{colonia}</label>
         </div>
-      </div>
+      ))}
+      <p>Colonias seleccionadas: {coloniasSeleccionadas.join(', ')}</p>
+    </div>
 
      
       <button className="bg-blue-500 text-white px-4 py-2 rounded-md">Buscar</button>
