@@ -53,6 +53,7 @@ export const medirDistancia = (mapaData4, propiedadesColonias) => {
   const distancias = [];
   supermercadosFiltrados.forEach((supermercado) => {
     localesFiltrados.forEach((local) => {
+      console.log("local ->", local);
       const distancia = calculateHaversineDistance(
         {
           lat: supermercado.geometry.coordinates[1],
@@ -66,6 +67,7 @@ export const medirDistancia = (mapaData4, propiedadesColonias) => {
       distancias.push({
         supermercado: supermercado.properties.NOMBRE,
         local: local.properties.NOMBRE,
+        id: local.id,
         distancia,
       });
     });

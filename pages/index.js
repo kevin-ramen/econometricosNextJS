@@ -23,7 +23,8 @@ const Index = () => {
   const [coloniasSeleccionadas, setColoniasSeleccionadas] = useState([]);
   const [selectedFood, setSelectedFood] = useState("");
   
-
+  //distancias ->
+  const [distancias, setDistancias] = useState([]);
 
   useEffect(() => {
     const getData = async () => {
@@ -92,7 +93,7 @@ const Index = () => {
         const localesFiltrados = locales.filter((local) => local.geometry.coordinates);
         console.log("supermercadosFiltrados", supermercadosFiltrados);
         console.log("localesFiltrados", localesFiltrados);
-        const distancias = [];
+        const distanciasArray = [];
         supermercadosFiltrados.forEach((supermercado) => {
           localesFiltrados.forEach((local) => {
             const distancia = calculateHaversineDistance(
@@ -105,13 +106,16 @@ const Index = () => {
                 lon: local.geometry.coordinates[0],
               }
             );
-            distancias.push({
+            distanciasArray.push({
               supermercado: supermercado.properties.NOMBRECOMERCIAL,
               local: local.properties.ubicacion,
+              id: local.id,
               distancia,
             });
           });
         });
+        
+        setDistancias(distanciasArray);
         console.log("distancias", distancias); 
       }
 
@@ -151,28 +155,7 @@ const Index = () => {
         </div>
 
         <div className="w-1/4 pl-4">
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">
-              Colonias:
-            </label>
-            <div className="max-h-40 overflow-y-auto border rounded-md p-2">
-              {colonias.map((colonia, index) => (
-                <div key={index} className="flex items-center">
-                  <input
-                    type="checkbox"
-                    id={`colonia-${index}`}
-                    value={colonia}
-                    checked={coloniasSeleccionadas.includes(colonia)}
-                    onChange={() => handleCheckboxChange(colonia)}
-                    className="mr-2"
-                  />
-                  <label htmlFor={`colonia-${index}`}>{colonia}</label>
-                </div>
-              ))}
-            </div>
-            <p>Colonias seleccionadas: {coloniasSeleccionadas.join(", ")}</p>
-          </div>
-
+         
           <div className="mb-4">
             <p className="pt-4 pb-4">
               Selecciona el platillo que quieres vender
@@ -197,15 +180,42 @@ const Index = () => {
             </select>
 
           </div>
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">
+              Colonias:
+            </label>
+            <div className="max-h-40 overflow-y-auto border rounded-md p-2">
+              {colonias.map((colonia, index) => (
+                <div key={index} className="flex items-center">
+                  <input
+                    type="checkbox"
+                    id={`colonia-${index}`}
+                    value={colonia}
+                    checked={coloniasSeleccionadas.includes(colonia)}
+                    onChange={() => handleCheckboxChange(colonia)}
+                    className="mr-2"
+                  />
+                  <label htmlFor={`colonia-${index}`}>{colonia}</label>
+                </div>
+              ))}
+            </div>
+            <p>Colonias seleccionadas: {coloniasSeleccionadas.join(", ")}</p>
+          </div>
 
           <button onClick={handleSearch} className="bg-blue-500 text-white px-4 py-2 rounded-md">
             Buscar
           </button>
 
-          <div className="mt-8 bg-gray-200 p-4 rounded-md">
-          <ContainerInformacionLocales/>
-          </div>
+          
         </div>
+        
+      </div>
+      <div className="mt-8 mb-8 bg-gray-200 p-8 rounded-md">
+                {
+                  distancias &&  distancias.length > 0 && (
+                    <ContainerInformacionLocales datos={distancias}/>
+                  )
+                }
       </div>
       <Footer />
     </>
