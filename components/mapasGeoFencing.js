@@ -7,18 +7,16 @@ import {
   colorIcono
 } from "../utils/funcionesMapa";
 
-const MapContainer = ({geoJson, propiedadesGeoJson, coloniasAMostrar,supermercadosGeoJson=null}) => {
+const MapContainer = ({geoJson, propiedadesGeoJson, coloniasAMostrar,propiedadesColonias,setPropiedadesColonias,supermercadosGeoJson=null}) => {
 
 //States 
 const [selectedMarker, setSelectedMarker] = React.useState(null);
 const [precioMaximoSupermercado, setPrecioMaximoSupermercado] = useState(0);
 const [precioPromedioSupermercado, setPrecioPromedioSupermercado] = useState(0);
-const [propiedadesColonias, setPropiedadesColonias] = useState([]);
 
 //UseEffect
 useEffect(() => {
   try{
-    console.log("Supermercados", supermercadosGeoJson);
     setPrecioMaximoSupermercado(calcularPrecioMaximoSupermercado(supermercadosGeoJson.features));
     setPrecioPromedioSupermercado(calcularPrecioPromedioSupermercado(supermercadosGeoJson.features));
   }catch(e){
@@ -26,9 +24,7 @@ useEffect(() => {
   }
 }, [supermercadosGeoJson]);
 
-
 useEffect(() => {
-
   //obtenemos en un estado las propiedades que estan en las colonias filtradas
   const propiedadesFiltradas = propiedadesGeoJson.features.filter(feature =>
     feature.geometry.coordinates && (coloniasAMostrar.length === 0 || coloniasAMostrar.includes(feature.properties.colonia))
@@ -37,17 +33,12 @@ useEffect(() => {
   console.log("propiedadesFiltradas", propiedadesFiltradas);
 }, [coloniasAMostrar]);
 
-
-
-
 //Funcion para colorear
 const colorIconoSupermercado = (precio) => {
   if (precio < precioPromedioSupermercado) return "http://127.0.0.1:5000/static/supermercadoverde.png"
   if (precio > precioPromedioSupermercado && precio < precioMaximoSupermercado) return "http://127.0.0.1:5000/static/supermercadonaranja.png"
   return "http://127.0.0.1:5000/static/supermercadorojo.png"
 }
-
- 
 
 const polygons = geoJson.features
   .filter(feature => feature.properties.GeoShape?.coordinates && (coloniasAMostrar.length >= 0 || coloniasAMostrar.includes(feature.properties.Colonianame)))
@@ -56,7 +47,6 @@ const polygons = geoJson.features
         lat: coord[1],
         lng: coord[0],
       }));
-
 
 return {
         paths: coordinates,
@@ -79,7 +69,7 @@ return {
       };
     });
 
-console.log("polygons", polygons);
+/* console.log("polygons", polygons); */
 const [infoWindowsOpen, setInfoWindowsOpen] = useState(Array(polygons.length).fill(false));
 
 const mapStyles = {
@@ -98,11 +88,8 @@ const mapStyles = {
     setInfoWindowsOpen(newInfoWindowsState);
   };
 
+//Mostrar las propiedades que estan en las colonias filtradas
   
-  //Mostrar las propiedades que estan en las colonias filtradas
-  
-
-
   return (
     <LoadScript googleMapsApiKey='AIzaSyCwwLJHujEZM1HVi-D8FWKeR_gug2QrtAo'>
       <GoogleMap 

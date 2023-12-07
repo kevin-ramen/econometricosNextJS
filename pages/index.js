@@ -7,6 +7,8 @@ import Header from "../components/header";
 import Footer from "../components/Footer";
 import coloniasJson from "../props/data_colonias.json";
 import ContainerComida from "../components/containerComida";
+import {calculateHaversineDistance} from "../utils/funcionesMapa";
+import ContainerInformacionLocales from "../components/containerInformacionLocales";
 
 const Index = () => {
   const [mapaData, setMapaData] = useState({});
@@ -14,10 +16,13 @@ const Index = () => {
   const [mapaData4, setMapaData4] = useState({});
   //mapa de comida ->
   const [mapaData5, setMapaData5] = useState({});
+  //mandar al mapa ->
+  const [propiedadesColonias, setPropiedadesColonias] = useState([]);
 
   const [colonias, setColonias] = useState([]);
   const [coloniasSeleccionadas, setColoniasSeleccionadas] = useState([]);
   const [selectedFood, setSelectedFood] = useState("");
+  
 
 
   useEffect(() => {
@@ -31,11 +36,14 @@ const Index = () => {
       setMapaData4(data4);
     };
     getData();
-  }, []);
+  }, [propiedadesColonias]);
 
   useEffect(() => {
     setColonias(coloniasJson);
   }, []);
+
+  
+
 
   const handleCheckboxChange = (colonia) => {
     if (coloniasSeleccionadas.includes(colonia)) {
@@ -49,6 +57,7 @@ const Index = () => {
     }
   };
 
+  //selleccionar supermercado -->
   const handleSearch = () => {
     if (selectedFood !== " ") {
       try {
@@ -64,6 +73,52 @@ const Index = () => {
     }
   };
   
+  //funcion para calcular las distancias dato el local y el supermercado -->
+
+  useEffect(() => {
+    console.log("entro?");
+    const medirDistancia = (mapaData5, propiedadesColonias) => {
+      if(Object.keys(mapaData5).length === 0 || Object.keys(propiedadesColonias).length === 0){
+        return;
+      }else{
+         
+        const supermercados = mapaData5.geojson_data.features;
+        const locales = propiedadesColonias;
+        console.log("supermercados", supermercados);
+        console.log("locales", locales);
+       
+
+        const supermercadosFiltrados = supermercados.filter((supermercado) => supermercado.geometry.coordinates);
+        const localesFiltrados = locales.filter((local) => local.geometry.coordinates);
+        console.log("supermercadosFiltrados", supermercadosFiltrados);
+        console.log("localesFiltrados", localesFiltrados);
+        const distancias = [];
+        supermercadosFiltrados.forEach((supermercado) => {
+          localesFiltrados.forEach((local) => {
+            const distancia = calculateHaversineDistance(
+              {
+                lat: supermercado.geometry.coordinates[1],
+                lon: supermercado.geometry.coordinates[0],
+              },
+              {
+                lat: local.geometry.coordinates[1],
+                lon: local.geometry.coordinates[0],
+              }
+            );
+            distancias.push({
+              supermercado: supermercado.properties.NOMBRECOMERCIAL,
+              local: local.properties.ubicacion,
+              distancia,
+            });
+          });
+        });
+        console.log("distancias", distancias); 
+      }
+
+    };
+    medirDistancia(mapaData5, propiedadesColonias);
+  }, [mapaData5, propiedadesColonias]);
+
 
   return (
     <>
@@ -87,6 +142,8 @@ const Index = () => {
                 propiedadesGeoJson={mapaData.geojson_data}
                 supermercadosGeoJson={mapaData5.geojson_data}
                 coloniasAMostrar={coloniasSeleccionadas}
+                propiedadesColonias={propiedadesColonias}
+                setPropiedadesColonias={setPropiedadesColonias}
                  
               />
             )}
@@ -145,7 +202,9 @@ const Index = () => {
             Buscar
           </button>
 
-          <div className="mt-8 bg-gray-200 p-4 rounded-md"></div>
+          <div className="mt-8 bg-gray-200 p-4 rounded-md">
+          <ContainerInformacionLocales/>
+          </div>
         </div>
       </div>
       <Footer />
