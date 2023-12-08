@@ -170,9 +170,11 @@ const mapStyles = {
           }}
         >
           <div>
+          <p><strong>#:</strong> {selectedMarker.id}</p>
             <p><strong>Nombre:</strong> {selectedMarker.properties.NOMBRECOMERCIAL || selectedMarker.properties.ubicacion}</p>
             {selectedMarker.properties.precio && (
              <>
+              
               <p><strong>Precio:</strong> $ {selectedMarker.properties.precio} pesos mexicanos. /  $ {((selectedMarker.properties.precio)/17.42).toFixed(1)} dolares</p>
               <p><strong>Tamaño:</strong> {selectedMarker.properties.tamanio} metros cuadrados</p>
               <p><strong>Colonia:</strong> {selectedMarker.properties.colonia}</p>

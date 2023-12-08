@@ -110,6 +110,10 @@ const Index = () => {
               supermercado: supermercado.properties.NOMBRECOMERCIAL,
               local: local.properties.ubicacion,
               id: local.id,
+              metros:local.properties.tamanio,
+              precio_local:local.properties.precio,
+              precio_metros_cuadrado: local.properties.precio/local.properties.tamanio,
+              precio_supermercado:supermercado.properties.PRECIO,
               distancia,
             });
           });
@@ -158,7 +162,7 @@ const Index = () => {
          
           <div className="mb-4">
             <p className="pt-4 pb-4">
-              Selecciona el platillo que quieres vender
+              <b>Selecciona el platillo que quieres vender</b>
             </p>
             <label
               htmlFor="comida"
@@ -210,10 +214,12 @@ const Index = () => {
         </div>
         
       </div>
-      <div className="mt-8 mb-8 bg-gray-200 p-8 rounded-md">
+      <div className="mt-8 mb-8 p-8 rounded-md">
                 {
                   distancias &&  distancias.length > 0 && (
-                    <ContainerInformacionLocales datos={distancias}/>
+                    <div className="p-10">
+                      <ContainerInformacionLocales datos={distancias}/>
+                      </div>
                   )
                 }
       </div>
