@@ -3,6 +3,8 @@ import tomate from './imagenes/Jitomate.png';
 import Carne from './imagenes/Carne.png';
 import lechuga from './imagenes/Lechuga.png';
 import Aguacate from './imagenes/Aguacate.png';
+import Image from 'next/image';
+
 const Hamburguesa = () => {
     return (
         <div>

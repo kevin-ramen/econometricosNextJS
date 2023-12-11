@@ -13,3 +13,8 @@ module.exports = {
     staticFolder: '/props',
   },
 };
+
+
+// next.config.js
+const withImages = require('next-images');
+module.exports = withImages();
