@@ -1,4 +1,9 @@
 import React from 'react'
+import Hamburguesa from './comidas/Hamburguesa'
+import Flan from './comidas/Flan'
+import Michelada from './comidas/Michelada'
+import Pizza from './comidas/Pizza'
+
 
 const ContainerComida = ({comida}) => {
     console.log("comida", comida)
@@ -6,13 +11,13 @@ const ContainerComida = ({comida}) => {
         <div>
 
         {comida === "5" ? (
-            <h3>Hamburguesa</h3>
+            <Hamburguesa/>
         ) : comida === "6" ? (
-            <h3>Flan</h3>
+            <Flan/>
         ) : comida === "7" ? (
-            <h3>Michelada</h3>
+            <Michelada/>
         ) : comida === "8" ? (
-            <h3>Pizza</h3>
+            <Pizza/>
         ) : (
            null
         )}
