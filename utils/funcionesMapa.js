@@ -7,9 +7,9 @@ export const getColorByE_IDS_V = (eIdsV) => {
 };
 
 export const colorIcono = (precio) => {
-  if (precio < 5000) return "http://127.0.0.1:5000/static/locacionverde.png"
-  if (precio > 5000 && precio < 10000) return "http://127.0.0.1:5000/static/locacionnraranja.png"
-  return "http://127.0.0.1:5000/static/locacionrojo.png"
+  if (precio < 6000) return "https://econometricos-186a1a12a814.herokuapp.com/static/locacionverde.png"
+  if (precio > 6000 && precio < 12000) return "https://econometricos-186a1a12a814.herokuapp.com/static/locacionnraranja.png"
+  return "https://econometricos-186a1a12a814.herokuapp.com/locacionrojo.png"
 }
 
 export const calcularPrecioMaximoSupermercado = (supermercado) => {
