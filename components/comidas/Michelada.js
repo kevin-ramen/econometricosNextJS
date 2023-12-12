@@ -9,3 +9,11 @@ const Michelada = () => {
 }
 
 export default Michelada
+
+
+/* PRECIO
+PRODUCTO	
+CERVEZA	43.114286
+LIMON	49.100000
+SALSA DE SOYA	16.833333
+SALSA INGLESA	65.454545 */

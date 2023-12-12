@@ -23,7 +23,7 @@ const Index = () => {
   const [coloniasSeleccionadas, setColoniasSeleccionadas] = useState([]);
   const [selectedFood, setSelectedFood] = useState("");
   
-  //distancias ->
+  //distancias -> uno
   const [distancias, setDistancias] = useState([]);
 
   useEffect(() => {
@@ -142,7 +142,7 @@ const Index = () => {
 
       <div className="container mx-auto mt-8 flex">
         <div className="w-3/4 pr-4">
-        {/*   <div>
+        {  <div>
             {mapaData4.geojson_data && (
               <MapContainer
                 id="4"
@@ -155,7 +155,7 @@ const Index = () => {
                  
               />
             )}
-          </div> */}
+          </div> }
         </div>
 
         <div className="w-1/4 pl-4">
@@ -180,7 +180,7 @@ const Index = () => {
               <option value="5">Hamburguesa</option>
               <option value="6">Flan</option>
               <option value="7">Michelada</option>
-              <option value="8">Pizza</option>
+              
             </select>
 
           </div>

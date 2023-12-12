@@ -9,3 +9,11 @@ const Flan = () => {
 }
 
 export default Flan
+
+
+
+/* PRECIO
+PRODUCTO	
+AZUCAR	42.031250
+HUEVO	51.132692
+LECHE ULTRAPASTEURIZADA	29.364103 */
