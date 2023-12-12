@@ -2,7 +2,7 @@ import React from 'react'
 import Hamburguesa from './comidas/Hamburguesa'
 import Flan from './comidas/Flan'
 import Michelada from './comidas/Michelada'
-import Pizza from './comidas/Pizza'
+ 
 
 
 const ContainerComida = ({comida}) => {
@@ -17,7 +17,7 @@ const ContainerComida = ({comida}) => {
         ) : comida === "7" ? (
             <Michelada/>
         ) : comida === "8" ? (
-            <Pizza/>
+            null
         ) : (
            null
         )}
