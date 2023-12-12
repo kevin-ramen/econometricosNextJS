@@ -35,9 +35,9 @@ useEffect(() => {
 
 //Funcion para colorear
 const colorIconoSupermercado = (precio) => {
-  if (precio < precioPromedioSupermercado) return "http://127.0.0.1:5000/static/supermercadoverde.png"
-  if (precio > precioPromedioSupermercado && precio < precioMaximoSupermercado) return "http://127.0.0.1:5000/static/supermercadonaranja.png"
-  return "http://127.0.0.1:5000/static/supermercadorojo.png"
+  if (precio < precioPromedioSupermercado) return "https://econometricos-186a1a12a814.herokuapp.com/static/supermercadoverde.png"
+  if (precio > precioPromedioSupermercado && precio < precioMaximoSupermercado) return "https://econometricos-186a1a12a814.herokuapp.com/static/supermercadonaranja.png"
+  return "https://econometricos-186a1a12a814.herokuapp.com/static/supermercadorojo.png"
 }
 
 const polygons = geoJson.features
