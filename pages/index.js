@@ -7,8 +7,8 @@ import Header from "../components/header";
 import Footer from "../components/Footer";
 import coloniasJson from "../props/data_colonias.json";
 import ContainerComida from "../components/containerComida";
-import {calculateHaversineDistance} from "../utils/funcionesMapa";
 import ContainerInformacionLocales from "../components/containerInformacionLocales";
+import { medirDistancia } from '../utils/medicionDistancia';
 
 const Index = () => {
   const [mapaData, setMapaData] = useState({});
@@ -76,55 +76,10 @@ const Index = () => {
   
   //funcion para calcular las distancias dato el local y el supermercado -->
 
+  //Medir la distancia -->
   useEffect(() => {
     console.log("entro?");
-    const medirDistancia = (mapaData5, propiedadesColonias) => {
-      if(Object.keys(mapaData5).length === 0 || Object.keys(propiedadesColonias).length === 0){
-        return;
-      }else{
-         
-        const supermercados = mapaData5.geojson_data.features;
-        const locales = propiedadesColonias;
-        console.log("supermercados", supermercados);
-        console.log("locales", locales);
-       
-
-        const supermercadosFiltrados = supermercados.filter((supermercado) => supermercado.geometry.coordinates);
-        const localesFiltrados = locales.filter((local) => local.geometry.coordinates);
-        console.log("supermercadosFiltrados", supermercadosFiltrados);
-        console.log("localesFiltrados", localesFiltrados);
-        const distanciasArray = [];
-        supermercadosFiltrados.forEach((supermercado) => {
-          localesFiltrados.forEach((local) => {
-            const distancia = calculateHaversineDistance(
-              {
-                lat: supermercado.geometry.coordinates[1],
-                lon: supermercado.geometry.coordinates[0],
-              },
-              {
-                lat: local.geometry.coordinates[1],
-                lon: local.geometry.coordinates[0],
-              }
-            );
-            distanciasArray.push({
-              supermercado: supermercado.properties.NOMBRECOMERCIAL,
-              local: local.properties.ubicacion,
-              id: local.id,
-              metros:local.properties.tamanio,
-              precio_local:local.properties.precio,
-              precio_metros_cuadrado: local.properties.precio/local.properties.tamanio,
-              precio_supermercado:supermercado.properties.PRECIO,
-              distancia,
-            });
-          });
-        });
-        
-        setDistancias(distanciasArray);
-        console.log("distancias", distancias); 
-      }
-
-    };
-    medirDistancia(mapaData5, propiedadesColonias);
+    medirDistancia(mapaData5, propiedadesColonias, setDistancias);
   }, [mapaData5, propiedadesColonias]);
 
 

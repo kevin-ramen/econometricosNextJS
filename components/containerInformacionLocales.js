@@ -57,8 +57,13 @@ const ContainerInformacionLocales = ({ datos }) => {
       acc.minPrecioSupermercado = Math.min(acc.minPrecioSupermercado, dato.precio_supermercado);
   
       // Metros cuadrados
-      acc.maxMetros = Math.max(acc.maxMetros, dato.metros);
-      acc.minMetros = Math.min(acc.minMetros, dato.metros);
+      acc.maxMetros = Math.max(acc.maxMetros, dato.precio_metros_cuadrado);
+      acc.minMetros = Math.min(acc.minMetros, dato.precio_metros_cuadrado);
+
+      // Tiempo
+
+      acc.maxTiempo = Math.max(acc.maxTiempo, dato.tiempo);
+      acc.minTiempo = Math.min(acc.minTiempo, dato.tiempo);
   
       return acc;
     },
@@ -69,18 +74,23 @@ const ContainerInformacionLocales = ({ datos }) => {
       minPrecioSupermercado: Infinity,
       maxMetros: -Infinity,
       minMetros: Infinity,
+      maxTiempo: -Infinity,
+      minTiempo: Infinity,
     }
   );
 
-  const calculateCalificacion = (dato, maxDistancia, minDistancia, maxPrecioSupermercado, minPrecioSupermercado, maxMetros, minMetros) => {
+  const calculateCalificacion = (dato, maxDistancia, minDistancia, maxPrecioSupermercado, minPrecioSupermercado, maxMetros, minMetros, maxTiempo, minTiempo) => {
     const distanciaScore = 10 - ((dato.distancia - minDistancia) / (maxDistancia - minDistancia)) * 10;
-    const indiceScore = dato.geoData ? (dato.geoData.ids_zona / 10) : 0; // Verifica si geoData está presente
+    const indiceScore = dato.geoData ? (dato.geoData.ids_zona / 10) : 0; 
     const precioSupermercadoScore = 10 - ((dato.precio_supermercado - minPrecioSupermercado) / (maxPrecioSupermercado - minPrecioSupermercado)) * 10;
-    const metrosScore = ((dato.metros - minMetros) / (maxMetros - minMetros)) * 10;
+    const metrosScore = ((dato.precio_metros_cuadrado - minMetros) / (maxMetros - minMetros)) * 10;
+    const tiempoScore = 10 - ((dato.tiempo - minTiempo) / (maxTiempo - minTiempo)) * 10;
+     
+
   
     // Suma las puntuaciones y calcula el promedio
-    const totalScore = distanciaScore + indiceScore + precioSupermercadoScore + metrosScore;
-    const calificacionTotal = totalScore / 4;
+    const totalScore = distanciaScore + indiceScore + precioSupermercadoScore + metrosScore + tiempoScore;
+    const calificacionTotal = totalScore / 5;
   
     return calificacionTotal;
   };
@@ -93,7 +103,9 @@ const ContainerInformacionLocales = ({ datos }) => {
       maxMinValues.maxPrecioSupermercado,
       maxMinValues.minPrecioSupermercado,
       maxMinValues.maxMetros,
-      maxMinValues.minMetros
+      maxMinValues.minMetros,
+      maxMinValues.maxTiempo,
+      maxMinValues.minTiempo
     );
   
     const calificacionB = calculateCalificacion(
@@ -103,7 +115,9 @@ const ContainerInformacionLocales = ({ datos }) => {
       maxMinValues.maxPrecioSupermercado,
       maxMinValues.minPrecioSupermercado,
       maxMinValues.maxMetros,
-      maxMinValues.minMetros
+      maxMinValues.minMetros,
+      maxMinValues.maxTiempo,
+      maxMinValues.minTiempo
     );
   
     if (sortConfig.direction === 'asc') {
@@ -208,6 +222,12 @@ const ContainerInformacionLocales = ({ datos }) => {
                       Distancia (km)
                     </th>
                     <th
+                      scope="col"
+                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" 
+                    >
+                     Tiempo (min)
+                    </th> 
+                    <th
                         scope="col"
                         className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                         onClick={() => handleSort('calificacion')}
@@ -224,6 +244,7 @@ const ContainerInformacionLocales = ({ datos }) => {
                 <tbody className="bg-white divide-y divide-gray-200">
                 {sortedIndices.map((sortedIndex, index) => {
                         const dato = datos[sortedIndex];
+                        console.log("dato", dato);
                         const geoData = mapaData5.geojson_data[dato.id];
                         const calificacion = calculateCalificacion(
                             dato,
@@ -232,7 +253,10 @@ const ContainerInformacionLocales = ({ datos }) => {
                             maxMinValues.maxPrecioSupermercado,
                             maxMinValues.minPrecioSupermercado,
                             maxMinValues.maxMetros,
-                            maxMinValues.minMetros
+                            maxMinValues.minMetros,
+                            maxMinValues.maxTiempo,
+                            maxMinValues.minTiempo
+                            
                         );
                     return (
                       <tr key={index}>
@@ -264,7 +288,10 @@ const ContainerInformacionLocales = ({ datos }) => {
                           <div className="text-sm text-gray-900">{geoData?.ids_zona.toFixed(2)}</div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-900">{(dato.distancia).toFixed(2)}</div>
+                          <div className="text-sm text-gray-900">{(dato.distancia/1000)}</div>
+                        </td>
+                        <td>
+                          <div className="text-sm text-gray-900">{(dato.tiempo_texto)}</div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                             <div className="text-sm text-gray-900">{calificacion.toFixed(2)}</div>
