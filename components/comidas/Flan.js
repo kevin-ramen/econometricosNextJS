@@ -1,4 +1,8 @@
 import React from 'react'
+import Azucar from './imagenes/sugar.png';
+import Huevo from './imagenes/huevo.png';
+import Leche from './imagenes/leche.png';
+import Image from 'next/image';
 
 const Flan = () => {
     return (
@@ -17,35 +21,27 @@ const Flan = () => {
                     <tbody>
                         <tr>
                             <td className="flex items-center px-6 py-4">
-                                <Image src={Aguacate} alt="Aguacate" className="w-8 h-8 mr-2" />
-                                AGUACATE
+                                <Image src={Azucar} alt="Azucar" className="w-8 h-8 mr-2" />
+                                AZUCAR
                             </td>
-                            <td className="px-6 py-4">1 KG. HASS</td>
-                            <td className="px-6 py-4">43.41</td>
+                            <td className="px-6 py-4">1 KG. Estandar</td>
+                            <td className="px-6 py-4">42.03</td>
                         </tr>
                         <tr>
                             <td className="flex items-center px-6 py-4">
-                                <Image src={Carne} alt="Carne de res" className="w-8 h-8 mr-2" />
-                                CARNE RES
+                                <Image src={Huevo} alt="Huevo" className="w-8 h-8 mr-2" />
+                                HUEVO
                             </td>
-                            <td className="px-6 py-4">1 KG. GRANEL. MOLIDA ESPECIAL 80/20</td>
-                            <td className="px-6 py-4">96.67</td>
+                            <td className="px-6 py-4">1 KG.</td>
+                            <td className="px-6 py-4">51.13</td>
                         </tr>
                         <tr>
                             <td className="flex items-center px-6 py-4">
-                                <Image src={tomate} alt="Tomate" className="w-8 h-8 mr-2" />
-                                JITOMATE
+                                <Image src={Leche} alt="Leche" className="w-8 h-8 mr-2" />
+                                LECHE ULTRAPASTEURIZADA
                             </td>
-                            <td className="px-6 py-4">1 KG. SALADETTE/ HUAJE O TOMATE SALADETTE/ HUAJE</td>
-                            <td className="px-6 py-4">26.48</td>
-                        </tr>
-                        <tr>
-                            <td className="flex items-center px-6 py-4">
-                                <Image src={lechuga} alt="Lechuga" className="w-8 h-8 mr-2" />
-                                LECHUGA
-                            </td>
-                            <td className="px-6 py-4">PZA. ROMANA</td>
-                            <td className="px-6 py-4">16.31</td>
+                            <td className="px-6 py-4">1 Lt.</td>
+                            <td className="px-6 py-4">29.36</td>
                         </tr>
                     </tbody>
                 </table>
